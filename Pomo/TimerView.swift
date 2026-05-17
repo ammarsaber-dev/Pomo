@@ -85,7 +85,7 @@ struct TimerView: View {
                     
                     isRunning.toggle()
                 }
-                .disabled(task.isEmpty)
+                .disabled(task.isEmpty || timerSeconds == 0)
                 .opacity(task.isEmpty ? 0.5 : 1)
                 .frame(maxWidth: .infinity)
                 .padding()

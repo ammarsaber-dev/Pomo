@@ -10,8 +10,9 @@ import SwiftUI
 
 struct SessionsView: View {
     @Environment(\.modelContext) private var modelContext
-
     @Query private var sessions: [Session]
+
+    @State private var showClearAlert = false
 
     var body: some View {
         NavigationStack {
@@ -29,25 +30,37 @@ struct SessionsView: View {
                 if !sessions.isEmpty {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Clear") {
-                            try? modelContext.delete(model: Session.self)
+                            showClearAlert = true
                         }
                     }
                 }
+            }
+            .alert("Clear all saved sessions?",
+                   isPresented: $showClearAlert) {
+                Button("Clear All", role: .destructive) {
+                    do {
+                        try modelContext.delete(model: Session.self)
+                    } catch {
+                        print("Failed to clear sessions: \(error)")
+                    }
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("This action cannot be undone.")
             }
             .overlay {
                 if sessions.isEmpty {
                     ContentUnavailableView(
                         "No Saved Sessions Yet",
                         systemImage: "clock.badge.checkmark",
-                        description: Text(
-                            "Complete a focus session to see it here."
-                        )
+                        description: Text("Complete a focus session to see it here.")
                     )
                 }
             }
         }
     }
 }
+
 
 #Preview {
     SessionsView()
