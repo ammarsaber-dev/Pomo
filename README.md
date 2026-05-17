@@ -1,11 +1,19 @@
 # Pomo
 
-A minimalist Pomodoro focus timer for iOS, built with SwiftUI and SwiftData.
+A minimal pomodoro timer for iOS built with SwiftUI.
 
-- Circular countdown timer with 5, 25, 30, 45 min presets
-- Name each session before starting
-- Completed sessions are saved and viewable in history
+## Features
 
-**Requirements:** iOS 26.5+, Xcode 26.5+
+- 25-minute focus timer with a live progress ring
+- Custom session durations (5, 25, 30, 45 min)
+- Sessions log saved locally with SwiftData
+- Clean, minimal UI that adapts to light and dark mode
 
-Open `Pomo.xcodeproj` and press **Cmd+R**.
+## Built With
+
+- SwiftUI
+- SwiftData
+
+## Status
+
+Work in progress — built as a learning project.
