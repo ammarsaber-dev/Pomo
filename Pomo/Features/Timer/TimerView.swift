@@ -42,7 +42,7 @@ struct TimerView: View {
 
                     HStack {
                         ForEach(viewModel.durations, id: \.self) { d in
-                            Button("\(d) min") {
+                            Button(viewModel.durationLabel(d)) {
                                 withAnimation {
                                     viewModel.selectDuration(d)
                                 }
@@ -57,7 +57,7 @@ struct TimerView: View {
             Spacer()
 
             VStack {
-                Button(viewModel.isRunning ? "Pause" : "Start") {
+                Button(viewModel.timerButtonLabel) {
                     viewModel.toggleTimer(context: modelContext)
                 }
                 .disabled(viewModel.task.isEmpty || viewModel.timerSeconds == 0)

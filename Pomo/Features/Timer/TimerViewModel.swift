@@ -12,15 +12,17 @@ import SwiftData
 class TimerViewModel {
     private var timer: Timer?
 
-    var totalSeconds = 1500
+    var totalSeconds = 5
     var task = ""
-    var timerSeconds = 1500
+    var timerSeconds = 5
     var isRunning = false
 
-    let durations = [1, 5, 25, 30, 45]
+    let durations = [5, 25, 30, 45, 60]
     var selectedDuration = 25
 
     private var startTime: Date = .init()
+
+    var showCompletionAlert = false
 
     var timeDisplay: String {
         let minutes = timerSeconds / 60
@@ -33,7 +35,15 @@ class TimerViewModel {
         Double(timerSeconds) / Double(totalSeconds)
     }
 
-    var showCompletionAlert = false
+    var timerButtonLabel: String {
+        if timerSeconds == totalSeconds && !isRunning {
+            return "Start"
+        } else if isRunning {
+            return "Pause"
+        }
+
+        return "Resume"
+    }
 
     func toggleTimer(context: ModelContext) {
         if !isRunning {
@@ -59,6 +69,16 @@ class TimerViewModel {
         totalSeconds = duration * 60
         timerSeconds = duration * 60
         selectedDuration = duration
+    }
+
+    func durationLabel(_ minutes: Int) -> String {
+        if minutes < 60 {
+            return "\(minutes)m"
+        } else if minutes % 60 == 0 {
+            return "\(minutes / 60)h"
+        }
+
+        return "\(minutes / 60)h \(minutes % 60)m"
     }
 
     private func saveSession(context: ModelContext) {

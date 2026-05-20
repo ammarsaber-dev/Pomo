@@ -21,7 +21,7 @@ struct SessionsView: View {
                     HStack {
                         Text(session.taskName)
                         Spacer()
-                        Text("\(session.duration / 60) min")
+                        Text(session.durationLabel)
                     }
                 }
             }
