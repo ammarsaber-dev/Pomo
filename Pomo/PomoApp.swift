@@ -12,7 +12,7 @@ import SwiftUI
 struct PomoApp: App {
     var body: some Scene {
         WindowGroup {
-            RootView()
+            ContentView()
         }
         .modelContainer(for: Session.self)
     }

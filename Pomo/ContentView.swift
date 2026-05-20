@@ -1,5 +1,5 @@
 //
-//  RootView.swift
+//  ContentView.swift
 //  Pomo
 //
 //  Created by Ammar Saber on 17/05/2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RootView: View {
+struct ContentView: View {
     var body: some View {
         TabView {
             Tab("Timer", systemImage: "timer") {
@@ -23,5 +23,5 @@ struct RootView: View {
 }
 
 #Preview {
-    RootView()
+    ContentView()
 }

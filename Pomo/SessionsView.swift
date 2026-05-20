@@ -35,16 +35,19 @@ struct SessionsView: View {
                     }
                 }
             }
-            .alert("Clear all saved sessions?",
-                   isPresented: $showClearAlert) {
+            .alert(
+                "Clear all saved sessions?",
+                isPresented: $showClearAlert
+            ) {
                 Button("Clear All", role: .destructive) {
                     do {
+                        try? modelContext.save()  // Force any pending changes to disk before deleting, so nothing is missed
                         try modelContext.delete(model: Session.self)
                     } catch {
                         print("Failed to clear sessions: \(error)")
                     }
                 }
-                Button("Cancel", role: .cancel) { }
+                Button("Cancel", role: .cancel) {}
             } message: {
                 Text("This action cannot be undone.")
             }
@@ -53,14 +56,15 @@ struct SessionsView: View {
                     ContentUnavailableView(
                         "No Saved Sessions Yet",
                         systemImage: "clock.badge.checkmark",
-                        description: Text("Complete a focus session to see it here.")
+                        description: Text(
+                            "Complete a focus session to see it here."
+                        )
                     )
                 }
             }
         }
     }
 }
-
 
 #Preview {
     SessionsView()
