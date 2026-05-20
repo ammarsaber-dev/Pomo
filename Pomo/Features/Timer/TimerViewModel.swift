@@ -12,9 +12,9 @@ import SwiftData
 class TimerViewModel {
     private var timer: Timer?
 
-    var totalSeconds = 5
+    var totalSeconds = 1500
     var task = ""
-    var timerSeconds = 5
+    var timerSeconds = 1500
     var isRunning = false
 
     let durations = [5, 25, 30, 45, 60]
