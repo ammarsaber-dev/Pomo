@@ -3,25 +3,12 @@
 A minimal Pomodoro timer for iOS — built with SwiftUI and SwiftData.  
 Focus on your work, track your sessions, and build better habits.
 
----
-
 ## Demo
 
-<video src="videos/Pomo1080.mov" width="320" height="auto" controls>
-  Your browser does not support the video tag.
-</video>
-
-<p align="center">
-  <i>Screen recording coming soon.</i>
-</p>
-
----
-
+![](Pomo1080.mov)
 ## Overview
 
 Pomo is a clean, no-fuss Pomodoro timer that helps you stay focused during work sessions. Start a timer, give it a task name, and get into flow. Completed sessions are saved locally so you can review your productivity over time.
-
----
 
 ## Features
 
@@ -33,8 +20,6 @@ Pomo is a clean, no-fuss Pomodoro timer that helps you stay focused during work 
 - **Clear all sessions** — wipe history with a single tap
 - **Light & Dark Mode** — adapts to your system appearance automatically
 
----
-
 ## Built With
 
 | Technology | Purpose |
@@ -45,16 +30,14 @@ Pomo is a clean, no-fuss Pomodoro timer that helps you stay focused during work 
 
 **Zero external dependencies.** Pure Apple SDKs.
 
----
-
 ## Getting Started
 
 ### Running the App
 
-## Automatic
+#### Automatic
 - Click on `Code` button above, then choose `Open with Xcode`
 
-## Manual
+#### Manual
 1. Clone the repository:
    ```bash
    git clone https://github.com/ammarsaber-dev/Pomo.git
@@ -62,8 +45,6 @@ Pomo is a clean, no-fuss Pomodoro timer that helps you stay focused during work 
 2. Open `Pomo.xcodeproj` in Xcode.
 3. Select an iOS 26+ simulator or connected device.
 4. Press **Cmd+R** to build and run.
-
----
 
 ## Architecture
 
@@ -99,8 +80,6 @@ User taps "Start" → TimerViewModel.toggleTimer()
   → Completion alert shown → timer resets to selected duration
 ```
 
----
-
 ## The Story Behind Pomo
 
 I'm learning iOS development by building real apps. Pomo is my first SwiftUI project — a simple Pomodoro timer I built from scratch with the help of **Claude** (Anthropic's AI assistant).
@@ -108,8 +87,6 @@ I'm learning iOS development by building real apps. Pomo is my first SwiftUI pro
 The goal was straightforward: learn SwiftUI and SwiftData by making something useful. Every commit represents a new concept I was figuring out — the `@Observable` macro, how SwiftData models work, why `@Environment(\.modelContext)` matters, and how to structure a SwiftUI app without getting lost in abstraction.
 
 It's not perfect, and that's the point. This is a learning artifact — something I can look back on as I build more complex apps and see how far I've come.
-
----
 
 ## Status
 
