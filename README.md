@@ -5,7 +5,7 @@ Focus on your work, track your sessions, and build better habits.
 
 ## Demo
 
-![](Pomo1080.mov)
+![](Pomo1080.mp4)
 ## Overview
 
 Pomo is a clean, no-fuss Pomodoro timer that helps you stay focused during work sessions. Start a timer, give it a task name, and get into flow. Completed sessions are saved locally so you can review your productivity over time.
