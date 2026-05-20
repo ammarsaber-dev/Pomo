@@ -10,33 +10,33 @@ import SwiftData
 
 @Observable
 class TimerViewModel {
-    private var timer: Timer?
-
-    var totalSeconds = 1500
-    var task = ""
-    var timerSeconds = 1500
-    var isRunning = false
-
     let durations = [5, 25, 30, 45, 60]
+    
+    private var timer: Timer?
+    var task = ""
+    var isRunning = false
+    
     var selectedDuration = 25
+    var sessionDuration = 25 * 60
+
+    var remainingSeconds = 25 * 60
 
     private var startTime: Date = .init()
 
     var showCompletionAlert = false
 
     var timeDisplay: String {
-        let minutes = timerSeconds / 60
-        let remainingSeconds = timerSeconds % 60
-
-        return String(format: "%02d:%02d", minutes, remainingSeconds)
+        let minutes = remainingSeconds / 60
+        let seconds = remainingSeconds % 60
+        return String(format: "%02d:%02d", minutes, seconds)
     }
 
     var progress: Double {
-        Double(timerSeconds) / Double(totalSeconds)
+        Double(remainingSeconds) / Double(sessionDuration)
     }
 
     var timerButtonLabel: String {
-        if timerSeconds == totalSeconds && !isRunning {
+        if remainingSeconds == sessionDuration && !isRunning {
             return "Start"
         } else if isRunning {
             return "Pause"
@@ -61,13 +61,13 @@ class TimerViewModel {
 
     func reset() {
         stop()
-        timerSeconds = totalSeconds
+        remainingSeconds = sessionDuration
     }
 
     func selectDuration(_ duration: Int) {
         stop()
-        totalSeconds = duration * 60
-        timerSeconds = duration * 60
+        sessionDuration = duration * 60
+        remainingSeconds = duration * 60
         selectedDuration = duration
     }
 
@@ -84,22 +84,21 @@ class TimerViewModel {
     private func saveSession(context: ModelContext) {
         let session = Session(
             taskName: task,
-            duration: totalSeconds,
+            duration: sessionDuration,
             startTime: startTime,
             endTime: .now
         )
         context.insert(session)
-        print("Session saved: \(task)")
     }
 
     private func tick(context: ModelContext) {
-        if timerSeconds > 0 {
-            timerSeconds -= 1
+        if remainingSeconds > 0 {
+            remainingSeconds -= 1
         } else {
             stop()
             saveSession(context: context)
             showCompletionAlert = true
-            timerSeconds = totalSeconds
+            remainingSeconds = sessionDuration
         }
     }
 

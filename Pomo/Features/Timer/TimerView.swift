@@ -60,7 +60,7 @@ struct TimerView: View {
                 Button(viewModel.timerButtonLabel) {
                     viewModel.toggleTimer(context: modelContext)
                 }
-                .disabled(viewModel.task.isEmpty || viewModel.timerSeconds == 0)
+                .disabled(viewModel.task.isEmpty || viewModel.remainingSeconds == 0)
                 .opacity(viewModel.task.isEmpty ? 0.5 : 1)
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -76,7 +76,7 @@ struct TimerView: View {
                     
                 }
                 .buttonStyle(.plain)
-                .disabled(!viewModel.isRunning && viewModel.timerSeconds == viewModel.totalSeconds)
+                .disabled(!viewModel.isRunning && viewModel.remainingSeconds == viewModel.sessionDuration)
                 .frame(maxWidth: .infinity)
                 .padding()
             }
