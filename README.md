@@ -7,7 +7,7 @@ Focus on your work, track your sessions, and build better habits.
 
 ## Demo
 
-<video src="videos/Pomo.mov" width="320" height="auto" controls>
+<video src="videos/Pomo1080.mov" width="320" height="auto" controls>
   Your browser does not support the video tag.
 </video>
 
@@ -51,12 +51,16 @@ Pomo is a clean, no-fuss Pomodoro timer that helps you stay focused during work 
 
 ### Running the App
 
+## Automatic
+- Click on `Code` button above, then choose `Open with Xcode`
+
+## Manual
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/Pomo.git
+   git clone https://github.com/ammarsaber-dev/Pomo.git
    ```
 2. Open `Pomo.xcodeproj` in Xcode.
-3. Select an iOS 18+ simulator or connected device.
+3. Select an iOS 26+ simulator or connected device.
 4. Press **Cmd+R** to build and run.
 
 ---
