@@ -18,11 +18,6 @@ struct TimerView: View {
     var body: some View {
         VStack {
             VStack {
-                TextField("Type your task here", text: $viewModel.task)
-                    .multilineTextAlignment(.center)
-                    .font(.system(size: 24))
-                    .foregroundStyle(.primary)
-                    .focused($isTaskFieldFocused)
                 VStack(spacing: 24) {
                     ZStack {
                         Circle()
@@ -39,11 +34,21 @@ struct TimerView: View {
                                 .smooth,
                                 value: viewModel.remainingSeconds
                             )
+                        VStack(spacing: 0) {
+                            Text(viewModel.timeDisplay)
+                                .font(.system(size: 80))
+                                .fontWeight(.black)
+                                .contentTransition(.numericText())
 
-                        Text(viewModel.timeDisplay)
-                            .font(.system(size: 80))
-                            .fontWeight(.black)
-                            .contentTransition(.numericText())
+                            TextField(
+                                "What are you working on?",
+                                text: $viewModel.task
+                            )
+                            .multilineTextAlignment(.center)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .focused($isTaskFieldFocused)
+                        }
                     }
                     Picker("Duration", selection: $viewModel.selectedDuration) {
                         ForEach(viewModel.durations, id: \.self) { d in
@@ -108,7 +113,6 @@ struct TimerView: View {
 
                             VStack {
                                 Text("\(viewModel.task)")
-                                    .font(.title)
                                 Text("Tap to dismiss")
                                     .font(.footnote)
                                     .foregroundStyle(.secondary)
@@ -126,7 +130,7 @@ struct TimerView: View {
                     }
                 }
                 .transition(.opacity)
-                .animation(.easeInOut, value: viewModel.showCompletionOverlay)
+                .animation(.smooth, value: viewModel.showCompletionOverlay)
             }
             .onAppear {
                 isTaskFieldFocused = true
