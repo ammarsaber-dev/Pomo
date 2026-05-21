@@ -23,7 +23,7 @@ class TimerViewModel {
 
     private var startTime: Date = .init()
 
-    var showCompletionAlert = false
+    var showCompletionOverlay = false
 
     var timeDisplay: String {
         let minutes = remainingSeconds / 60
@@ -97,7 +97,7 @@ class TimerViewModel {
         } else {
             stop()
             saveSession(context: context)
-            showCompletionAlert = true
+            showCompletionOverlay = true
             remainingSeconds = sessionDuration
         }
     }

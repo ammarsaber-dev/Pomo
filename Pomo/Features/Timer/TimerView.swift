@@ -11,8 +11,9 @@ import SwiftData
 struct TimerView: View {
     // used to write into a database
     @Environment(\.modelContext) private var modelContext
-
     @State private var viewModel = TimerViewModel()
+    
+    @FocusState private var isTaskFieldFocused: Bool
 
     var body: some View {
         VStack {
@@ -21,6 +22,7 @@ struct TimerView: View {
                     .multilineTextAlignment(.center)
                     .font(.system(size: 24))
                     .foregroundStyle(.primary)
+                    .focused($isTaskFieldFocused)
                 VStack(spacing: 24) {
                     ZStack {
                         Circle()
@@ -83,10 +85,42 @@ struct TimerView: View {
             }
         }
         .padding()
-        .alert("Session Complete 🎉", isPresented: $viewModel.showCompletionAlert) {
-            Button("Keep Going") { }
-        } message: {
-            Text("You completed \"\(viewModel.task)\". Take a short break, you earned it.")
+        .overlay {
+            ZStack {
+                if viewModel.showCompletionOverlay {
+                    VStack {
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                            Text("Session Complete")
+                        }
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        
+                        VStack {
+                            Text("\(viewModel.task)")
+                                .font(.title)
+                            Text("Tap to dismiss")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.ultraThinMaterial)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation {
+                            viewModel.showCompletionOverlay = false
+                        }
+                    }
+                }
+            }
+            .transition(.opacity)
+            .animation(.easeInOut, value: viewModel.showCompletionOverlay)
+        }
+        .onAppear {
+            isTaskFieldFocused = true
         }
     }
 }
