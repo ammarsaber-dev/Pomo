@@ -38,7 +38,13 @@ struct SessionsView: View {
                         .foregroundStyle(.secondary)
                     }
                 }
+                .onDelete { indexSet in
+                    for index in indexSet {
+                        modelContext.delete(sessions[index])
+                    }
+                }
             }
+            
             .navigationTitle("Sessions")
             .toolbar {
                 if !sessions.isEmpty {
