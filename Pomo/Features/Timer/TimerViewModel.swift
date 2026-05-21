@@ -5,19 +5,22 @@
 //  Created by Ammar Saber on 20/05/2026.
 //
 
+import AVFoundation
 import Foundation
 import SwiftData
 
 @Observable
 class TimerViewModel {
-    let durations = [1, 5, 25, 30, 45, 60]
-    
+    private var audioPlayer: AVAudioPlayer?
     private var timer: Timer?
+
+    let durations = [1, 5, 25, 30, 45, 60]
+
     var task = ""
     var isRunning = false
-    
+
     var selectedDuration = 25
-    var sessionDuration =  25 * 60
+    var sessionDuration = 25 * 60
 
     var remainingSeconds = 25 * 60
 
@@ -94,7 +97,9 @@ class TimerViewModel {
     private func tick(context: ModelContext) {
         if remainingSeconds > 0 {
             remainingSeconds -= 1
+            playCompletionSound("clock-tick")
         } else {
+            playCompletionSound("completed")
             stop()
             saveSession(context: context)
             showCompletionOverlay = true
@@ -106,5 +111,12 @@ class TimerViewModel {
         timer?.invalidate()
         timer = nil
         isRunning = false
+    }
+
+    private func playCompletionSound(_ file: String) {
+        guard let url = Bundle.main.url(forResource: file, withExtension: "mp3")
+        else { return }
+        audioPlayer = try? AVAudioPlayer(contentsOf: url)
+        audioPlayer?.play()
     }
 }
