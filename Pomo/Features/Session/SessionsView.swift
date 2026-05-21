@@ -19,9 +19,21 @@ struct SessionsView: View {
             List {
                 ForEach(sessions, id: \.self) { session in
                     HStack {
-                        Text(session.taskName)
+                        VStack(alignment: .leading) {
+                            Text(session.taskName)
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                            Text(session.durationLabel)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                         Spacer()
-                        Text(session.durationLabel)
+                        VStack(alignment: .trailing) {
+                                Text(session.formattedTime)
+                                Text(session.formattedDate)
+                                .font(.footnote)
+                        }
+                        .foregroundStyle(.secondary)
                     }
                 }
             }

@@ -10,14 +10,14 @@ import SwiftData
 
 @Observable
 class TimerViewModel {
-    let durations = [5, 25, 30, 45, 60]
+    let durations = [1, 5, 25, 30, 45, 60]
     
     private var timer: Timer?
     var task = ""
     var isRunning = false
     
     var selectedDuration = 25
-    var sessionDuration = 25 * 60
+    var sessionDuration =  25 * 60
 
     var remainingSeconds = 25 * 60
 
