@@ -33,6 +33,7 @@ struct TimerView: View {
                                 )
                             )
                             .rotationEffect(.degrees(-90))
+                            .animation(.smooth, value: viewModel.remainingSeconds)
 
                         Text(viewModel.timeDisplay)
                             .font(.system(size: 80))

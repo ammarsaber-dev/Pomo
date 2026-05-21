@@ -18,7 +18,7 @@ class Session {
     var durationLabel: String {
         let minutes = duration / 60
         if minutes < 60 {
-            return "\(minutes <= 1 ? "less than a minute" : "minutes")"
+            return "\(minutes < 1 ? "less than a minute" : "\(minutes) minute\(minutes > 1 ? "s": "")")"
         } else if minutes % 60 == 0 {
             return "\(minutes / 60) hour\(minutes / 60 > 1 ? "s" : "")"
         }
@@ -33,7 +33,7 @@ class Session {
         let formattedEndTime = endTime.formatted(date: .omitted, time: .shortened)
         let formattedStartTime = startTime.formatted(date: .omitted, time: .shortened)
         
-        return formattedEndTime == formattedStartTime ? formattedEndTime : formattedStartTime + "-" + formattedEndTime
+        return formattedEndTime == formattedStartTime ? formattedEndTime : formattedStartTime + " - " + formattedEndTime
     }
 
     init(taskName: String, duration: Int, startTime: Date, endTime: Date) {

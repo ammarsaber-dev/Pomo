@@ -17,7 +17,8 @@ struct SessionsView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(sessions, id: \.self) { session in
+                // persistentModelID is a SwiftData built-in unique ID for each object.
+                ForEach(sessions, id: \.persistentModelID) { session in
                     HStack {
                         VStack(alignment: .leading) {
                             Text(session.taskName)
@@ -30,6 +31,7 @@ struct SessionsView: View {
                         Spacer()
                         VStack(alignment: .trailing) {
                                 Text(session.formattedTime)
+                                .font(.subheadline)
                                 Text(session.formattedDate)
                                 .font(.footnote)
                         }
