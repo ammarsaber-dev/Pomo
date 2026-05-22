@@ -47,7 +47,7 @@ Zero external dependencies. Pure Apple SDKs.
 
 ## Architecture
 
-Feature-based folder layout:
+Feature-based folder layout (MVVM):
 
 ```
 Pomo/
@@ -68,7 +68,7 @@ Pomo/
 
 ### Key Patterns
 
-- **ViewModel pattern** — `TimerViewModel` is an `@Observable` class (iOS 17+ macro); view handles layout, viewmodel owns state
+- **MVVM** — `TimerView` (View) delegates all state and logic to `TimerViewModel` (ViewModel), an `@Observable` class (iOS 17+ macro); `Session` is the Model
 - **SwiftData** — `@Model` objects, `@Query` for live updates, `modelContext` for writes
 - **Foundation Timer** — 1-second repeating `Timer` drives countdown; no Combine or async/await overhead
 - **AVAudioPlayer** — reusable instance for tick and completion sounds
