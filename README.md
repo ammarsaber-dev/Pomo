@@ -5,7 +5,7 @@ Focus on your work, track your sessions, and build better habits.
 
 ## Demo
 
-https://github.com/user-attachments/assets/672a4def-e8aa-4097-b73e-226c62231feb
+https://github.com/user-attachments/assets/77a58273-77c2-43dd-a2dc-c5e334954331
 
 ## Overview
 
