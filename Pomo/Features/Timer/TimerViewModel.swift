@@ -9,11 +9,29 @@ import AVFoundation
 import Foundation
 import SwiftData
 
+enum TimerMode {
+    case focus, rest
+}
+
+
 @Observable
 class TimerViewModel {
     private var audioPlayer: AVAudioPlayer?
     private var timer: Timer?
 
+    
+    var mode: TimerMode = .focus
+    
+    let breakMessages = [
+        "Take a breath",
+        "Rest your eyes",
+        "Stand up and stretch",
+        "Drink some water",
+        "You earned this"
+    ]
+    
+    var currentBreakMessage = "Take a breath"
+    
     let durations = [1, 5, 25, 30, 45, 60]
 
     var task = ""
@@ -46,6 +64,23 @@ class TimerViewModel {
         }
 
         return "Resume"
+    }
+    
+    func startBreak(context: ModelContext) {
+        mode = .rest
+        // 5 minutes break
+        remainingSeconds = 5 * 60
+        sessionDuration = 5 * 60
+        
+        toggleTimer(context: context)
+    }
+    
+    func skipBreak() {
+        reset()
+        mode = .focus
+
+        sessionDuration = selectedDuration * 60
+        remainingSeconds = selectedDuration * 60
     }
 
     func toggleTimer(context: ModelContext) {
@@ -98,11 +133,20 @@ class TimerViewModel {
         if remainingSeconds > 0 {
             remainingSeconds -= 1
             playCompletionSound("clock-tick")
+            
+            if mode == .rest && remainingSeconds % 10 == 0 {
+                currentBreakMessage = breakMessages.randomElement() ?? "Take a breath"
+            }
+            
         } else {
-            playCompletionSound("completed")
+            if mode == .focus {
+                saveSession(context: context)
+                showCompletionOverlay = true
+                playCompletionSound("completed")
+            } else {
+                mode = .focus
+            }
             stop()
-            saveSession(context: context)
-            showCompletionOverlay = true
             remainingSeconds = sessionDuration
         }
     }
@@ -114,8 +158,7 @@ class TimerViewModel {
     }
 
     private func playCompletionSound(_ file: String) {
-        guard let url = Bundle.main.url(forResource: file, withExtension: "mp3")
-        else { return }
+        guard let url = Bundle.main.url(forResource: file, withExtension: "mp3") else { return }
         audioPlayer = try? AVAudioPlayer(contentsOf: url)
         audioPlayer?.play()
     }

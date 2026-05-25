@@ -23,11 +23,8 @@ struct TimerView: View {
                         Circle()
                             .trim(from: 1 - viewModel.progress, to: 1)
                             .stroke(
-                                .primary,
-                                style: StrokeStyle(
-                                    lineWidth: 8,
-                                    lineCap: .round
-                                )
+                                viewModel.mode == .focus ? Color.primary : Color.green.opacity(0.6),
+                                style: StrokeStyle(lineWidth: 8, lineCap: .round)
                             )
                             .rotationEffect(.degrees(-90))
                             .animation(
@@ -39,27 +36,38 @@ struct TimerView: View {
                                 .font(.system(size: 80))
                                 .fontWeight(.black)
                                 .contentTransition(.numericText())
-
-                            TextField(
-                                "What are you working on?",
-                                text: $viewModel.task
-                            )
-                            .multilineTextAlignment(.center)
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                            .focused($isTaskFieldFocused)
+                            
+                            if viewModel.mode == .focus {
+                                TextField(
+                                    "What are you working on?",
+                                    text: $viewModel.task
+                                )
+                                .multilineTextAlignment(.center)
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                                .focused($isTaskFieldFocused)
+                            } else {
+                                Text(viewModel.currentBreakMessage)
+                                    .font(.largeTitle)
+                                    .fontWeight(.bold)
+                                    .id(viewModel.currentBreakMessage)
+                                .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                            }
                         }
+                        .animation(.smooth, value: viewModel.currentBreakMessage)
                     }
-                    Picker("Duration", selection: $viewModel.selectedDuration) {
-                        ForEach(viewModel.durations, id: \.self) { d in
-                            Text(viewModel.durationLabel(d))
-                                .tag(d)
+                    if viewModel.mode == .focus {
+                        Picker("Duration", selection: $viewModel.selectedDuration) {
+                            ForEach(viewModel.durations, id: \.self) { d in
+                                Text(viewModel.durationLabel(d))
+                                    .tag(d)
+                            }
                         }
-                    }
-                    .pickerStyle(.segmented)
-                    .onChange(of: viewModel.selectedDuration) { _, newValue in
-                        withAnimation {
-                            viewModel.selectDuration(newValue)
+                        .pickerStyle(.segmented)
+                        .onChange(of: viewModel.selectedDuration) { _, newValue in
+                            withAnimation {
+                                viewModel.selectDuration(newValue)
+                            }
                         }
                     }
                 }
@@ -70,32 +78,37 @@ struct TimerView: View {
                     Button(viewModel.timerButtonLabel) {
                         viewModel.toggleTimer(context: modelContext)
                     }
-                    .disabled(
-                        viewModel.task.isEmpty
-                            || viewModel.remainingSeconds == 0
-                    )
+                    .disabled(viewModel.mode == .focus && (viewModel.task.isEmpty || viewModel.remainingSeconds == 0))
                     .opacity(viewModel.task.isEmpty ? 0.5 : 1)
                     .frame(maxWidth: .infinity)
                     .padding()
                     .buttonStyle(.plain)
                     .foregroundStyle(.background)
-                    .background(viewModel.task.isEmpty ? .secondary : .primary)
+                    .background(viewModel.task.isEmpty ? .secondary : (viewModel.mode == .focus ? Color.primary : Color.green.opacity(0.6)))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
 
-                    Button("Reset") {
-                        withAnimation {
-                            viewModel.reset()
+                    if viewModel.mode == .focus {
+                        Button("Reset") {
+                            withAnimation {
+                                viewModel.reset()
+                            }
                         }
-
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(
-                        !viewModel.isRunning
+                        .disabled(
+                            !viewModel.isRunning
                             && viewModel.remainingSeconds
-                                == viewModel.sessionDuration
-                    )
-                    .frame(maxWidth: .infinity)
-                    .padding()
+                            == viewModel.sessionDuration
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                    } else {
+                        Button("Skip Break") {
+                            withAnimation {
+                                viewModel.skipBreak()
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                    }
                 }
             }
             .padding()
@@ -113,20 +126,24 @@ struct TimerView: View {
 
                             VStack {
                                 Text("\(viewModel.task)")
-                                Text("Tap to dismiss")
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
+                                HStack {
+                                    Button("Keep Going?") {
+                                        viewModel.showCompletionOverlay = false
+                                    }
+
+                                    Button("Take a break") {
+                                        viewModel.startBreak(context: modelContext)
+                                        viewModel.showCompletionOverlay = false
+                                    }
+                                    .buttonStyle(.borderedProminent)
+                                    .clipShape(.rect(cornerRadius: 16))
+                                }
                             }
 
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(.ultraThinMaterial)
                         .ignoresSafeArea()
-                        .onTapGesture {
-                            withAnimation {
-                                viewModel.showCompletionOverlay = false
-                            }
-                        }
                     }
                 }
                 .transition(.opacity)
