@@ -16,13 +16,19 @@ enum TimerMode {
 
 @Observable
 class TimerViewModel {
+    
+    enum Sounds: String {
+        case clockTick = "clock-tick"
+        case completed = "completed"
+    }
+    
     private var audioPlayer: AVAudioPlayer?
+    
     private var timer: Timer?
 
-    
     var mode: TimerMode = .focus
     
-    let breakMessages = [
+    static let breakMessages = [
         "Take a breath",
         "Rest your eyes",
         "Stand up and stretch",
@@ -30,7 +36,7 @@ class TimerViewModel {
         "You earned this"
     ]
     
-    var currentBreakMessage = "Take a breath"
+    var currentBreakMessage = breakMessages[0]
     
     let durations = [1, 5, 25, 30, 45, 60]
 
@@ -39,8 +45,10 @@ class TimerViewModel {
 
     var selectedDuration = 25
     var sessionDuration = 25 * 60
-
     var remainingSeconds = 25 * 60
+    
+    private let breakDuration = 5 * 60
+    
 
     private var startTime: Date = .init()
 
@@ -57,26 +65,29 @@ class TimerViewModel {
     }
 
     var timerButtonLabel: String {
-        if remainingSeconds == sessionDuration && !isRunning {
-            return "Start"
-        } else if isRunning {
+        if isRunning {
             return "Pause"
+        } else if mode == .rest {
+            return "Resume Break"
+        } else if remainingSeconds == sessionDuration {
+            return "Start"
         }
-
+        
         return "Resume"
     }
     
     func startBreak(context: ModelContext) {
         mode = .rest
+        
         // 5 minutes break
-        remainingSeconds = 5 * 60
-        sessionDuration = 5 * 60
+        remainingSeconds = breakDuration
+        sessionDuration = breakDuration
         
         toggleTimer(context: context)
     }
     
     func skipBreak() {
-        reset()
+        stop()
         mode = .focus
 
         sessionDuration = selectedDuration * 60
@@ -87,10 +98,8 @@ class TimerViewModel {
         if !isRunning {
             startTime = .now
             isRunning = true
-            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {
-                _ in
-                // Capture self so the closure can reference this specific instance when it fires later
-                self.tick(context: context)
+            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [self] _ in
+                tick(context: context)
             }
         } else {
             stop()
@@ -132,17 +141,13 @@ class TimerViewModel {
     private func tick(context: ModelContext) {
         if remainingSeconds > 0 {
             remainingSeconds -= 1
-            playCompletionSound("clock-tick")
+            playSound(.clockTick)
             
-            if mode == .rest && remainingSeconds % 10 == 0 {
-                currentBreakMessage = breakMessages.randomElement() ?? "Take a breath"
-            }
+            changeBreakMessages()
             
         } else {
             if mode == .focus {
-                saveSession(context: context)
-                showCompletionOverlay = true
-                playCompletionSound("completed")
+                handleFocusComplete(context: context)
             } else {
                 mode = .focus
             }
@@ -150,15 +155,28 @@ class TimerViewModel {
             remainingSeconds = sessionDuration
         }
     }
+    
+    private func changeBreakMessages() {
+        if mode == .rest && remainingSeconds % 10 == 0 {
+            currentBreakMessage = TimerViewModel.breakMessages.randomElement()!
+        }
+    }
+    
+    private func handleFocusComplete(context: ModelContext) {
+        saveSession(context: context)
+        showCompletionOverlay = true
+        playSound(.completed)
+    }
 
+    
     private func stop() {
         timer?.invalidate()
         timer = nil
         isRunning = false
     }
 
-    private func playCompletionSound(_ file: String) {
-        guard let url = Bundle.main.url(forResource: file, withExtension: "mp3") else { return }
+    private func playSound(_ sound: Sounds) {
+        guard let url = Bundle.main.url(forResource: sound.rawValue, withExtension: "mp3") else { return }
         audioPlayer = try? AVAudioPlayer(contentsOf: url)
         audioPlayer?.play()
     }

@@ -9,6 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct SessionsView: View {
+    @State private var viewModel = SessionsViewModel()
+    
     @Environment(\.modelContext) private var modelContext
     @Query private var sessions: [Session]
 
@@ -19,29 +21,10 @@ struct SessionsView: View {
             List {
                 // persistentModelID is a SwiftData built-in unique ID for each object.
                 ForEach(sessions, id: \.persistentModelID) { session in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(session.taskName)
-                                .font(.headline)
-                                .fontWeight(.semibold)
-                            Text(session.durationLabel)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        VStack(alignment: .trailing) {
-                                Text(session.formattedTime)
-                                .font(.subheadline)
-                                Text(session.formattedDate)
-                                .font(.footnote)
-                        }
-                        .foregroundStyle(.secondary)
-                    }
+                    SessionRowView(session: session)
                 }
                 .onDelete { indexSet in
-                    for index in indexSet {
-                        modelContext.delete(sessions[index])
-                    }
+                    viewModel.delete(sessions, at: indexSet, context: modelContext)
                 }
             }
             
@@ -60,12 +43,7 @@ struct SessionsView: View {
                 isPresented: $showClearAlert
             ) {
                 Button("Clear All", role: .destructive) {
-                    do {
-                        try? modelContext.save()  // Force any pending changes to disk before deleting, so nothing is missed
-                        try modelContext.delete(model: Session.self)
-                    } catch {
-                        print("Failed to clear sessions: \(error)")
-                    }
+                    viewModel.clearAll(context: modelContext)
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
