@@ -119,13 +119,7 @@ class TimerViewModel {
     }
 
     func durationLabel(_ minutes: Int) -> String {
-        if minutes < 60 {
-            return "\(minutes)m"
-        } else if minutes % 60 == 0 {
-            return "\(minutes / 60)h"
-        }
-
-        return "\(minutes / 60)h \(minutes % 60)m"
+        TimeFormatter.short(minutes: minutes)
     }
 
     private func saveSession(context: ModelContext) {
