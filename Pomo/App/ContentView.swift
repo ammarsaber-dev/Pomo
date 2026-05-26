@@ -17,6 +17,10 @@ struct ContentView: View {
             Tab("Sessions", systemImage: "list.bullet") {
                 SessionsView()
             }
+            
+            Tab("Stats", systemImage: "chart.pie") {
+                StatsView()
+            }
         }
         .tint(.primary)
     }
